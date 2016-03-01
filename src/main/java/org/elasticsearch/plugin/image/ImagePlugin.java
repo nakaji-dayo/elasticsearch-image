@@ -1,14 +1,10 @@
 package org.elasticsearch.plugin.image;
 
-import org.elasticsearch.common.inject.Module;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.mapper.image.ImageMapper;
 import org.elasticsearch.index.query.image.ImageQueryParser;
 import org.elasticsearch.indices.IndicesModule;
 import org.elasticsearch.plugins.Plugin;
-
-import java.util.Collection;
-import java.util.Collections;
+import org.elasticsearch.threadpool.ThreadPool;
 
 
 public class ImagePlugin extends Plugin {
@@ -24,7 +20,7 @@ public class ImagePlugin extends Plugin {
     }
 
     public void onModule(IndicesModule indicesModule) {
-        indicesModule.registerMapper("image", new ImageMapper.TypeParser());
+        indicesModule.registerMapper("image", new ImageMapper.TypeParser(new ThreadPool("elasticsearch-image")));
         indicesModule.registerQueryParser(ImageQueryParser.class);
     }
 }

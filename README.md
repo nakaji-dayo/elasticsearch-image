@@ -1,14 +1,15 @@
 Image Plugin for Elasticsearch
-==================================
+==============================
 
 The Image Plugin is an Content Based Image Retrieval Plugin for Elasticsearch using [LIRE (Lucene Image Retrieval)](https://code.google.com/p/lire/). It allows users to index images and search for similar images.
 
 It adds an `image` field type and an `image` query
 
-In order to install the plugin, simply run: `bin\plugin install jmoati/elasticsearch-image`.
+In order to install the plugin, simply run: `bin\plugin install kiwionly/elasticsearch-image`.
 
 |     Image Plugin          |  elasticsearch    | Release date |
 |---------------------------|-------------------|:------------:|
+| 2.2.0                     | 2.2.0             | 2016-03-01   |
 | 2.1.1                     | 2.1.1             | 2016-01-09   |
 | 1.3.0-SNAPSHOT (master)   | 1.1.0             |              |
 | 1.2.0                     | 1.0.1             | 2014-03-20   |
@@ -17,12 +18,29 @@ In order to install the plugin, simply run: `bin\plugin install jmoati/elasticse
 
 ## Developers:
 Kevin Wang <kzwang>
+
 Angelo Leto <angleto>
+
 zengde <zengde>
+
+kiwionly <kiwionly>
 
 
 ## Example
+#### Create Settings
+
+```sh
+{
+    "number_of_shards" : 5,
+    "number_of_replicas" : 2,
+    "index.version.created" : 1070499
+}
+```
+
+Since elasticsearch 2.2, that is a version checked, index version must set before version 2.0.0 beta 1.
+
 #### Create Mapping
+
 ```sh
 curl -XPUT 'localhost:9200/test/test/_mapping' -d '{
     "test": {
@@ -35,8 +53,7 @@ curl -XPUT 'localhost:9200/test/test/_mapping' -d '{
                     },
                     "JCD": {
                         "hash": ["BIT_SAMPLING", "LSH"]
-                    },
-                    "FCTH": {}
+                    }
                 },
                 "metadata": {
                     "jpeg.image_width": {
@@ -53,9 +70,10 @@ curl -XPUT 'localhost:9200/test/test/_mapping' -d '{
     }
 }'
 ```
-`type` should be `image`. **Mandatory**
+`type` should be `image`. This is the type register by this plugin. **Mandatory**
 
-`feature` is a map of features for index. **Mandatory, at least one is required**
+`feature` is a map of features for index. You can only search what you specific, e.g. base on example above, specific `JCD` with `LSH` in mapping allow search for it, but you cannot search `CEDD` with `LSH` 
+because the index mapping for `LSH` is not specific and created. If you not specific hash for a `feature`, it won't work. **Mandatory, at least one is required** 
 
 `hash` can be set if you want to search on hash. **Optional**
 
@@ -85,13 +103,13 @@ curl -XPOST 'localhost:9200/test/test/_search' -d '{
     }
 }'
 ```
-`feature` should be one of the features in the mapping.  **Mandatory**
+`feature` should be one of the features in the mapping. See above.  **Mandatory**
 
 `image` base64 of image to search.  **Optional if search using existing image**
 
-`hash` should be same to the hash set in mapping.  **Optional**
+`hash` should be same to the hash set in mapping. See Above.  **Optional**
 
-`limit` limit the number of results returned (per shard) for scoring. **Optional, only works when `hash` is specified**
+`limit` limit the number of results returned (per shard) for scoring.  **Optional, only works when `hash` is specified**
 
 `boost` score boost  **Optional**
 
@@ -106,7 +124,7 @@ curl -XPOST 'localhost:9200/test/test/_search' -d '{
                 "index": "test",
                 "type": "test",
                 "id": "image1",
-                "path": "my_image",
+                "path": "my_img",
                 "hash": "BIT_SAMPLING"
             }
         }
@@ -119,7 +137,7 @@ curl -XPOST 'localhost:9200/test/test/_search' -d '{
 
 `id` the id of the document to fetch image from.  **Mandatory**
 
-`path` the field specified as path to fetch image from.  **Mandatory**
+`path` the field specified as path to fetch image from. Example above is "my_img **Mandatory**
 
 `routing` a custom routing value to be used when retrieving the external image doc.  **Optional**
 
@@ -156,6 +174,12 @@ See [Large image data sets with LIRE ?some new numbers](http://www.semanticmetad
 | index.image.ignore_metadata_error| ignore errors happened during extract metadata from image | True |
 
 ## ChangeLog
+
+#### 2.2.0 (2016-03-01)
+
+- index.image.use_thread_pool is optional.
+- index.version.created is mandatory in settings.
+
 #### 2.1.1 (2016-01-06)
 
 #### 1.2.0 (2014-03-20)
