@@ -7,11 +7,11 @@ machine:
 dependencies:
   post:
     - mkdir ./target
-    - ./compile
 
 deployment:
   master:
     branch: master
     commands:
+      - ./compile
       - go get github.com/aktau/github-release
       - ./github-release.sh
