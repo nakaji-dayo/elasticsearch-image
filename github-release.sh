@@ -20,12 +20,5 @@ github-release upload \
   --repo $REPO \
   --tag $VERSION \
   --name $NAME \
-  --file ./target/elasticsearch-image-${VERSION}.jar
-  
-github-release upload \
-  --user $USER \
-  --repo $REPO \
-  --tag $VERSION \
-  --name $NAME \
-  --file ./target/elasticsearch-image-${VERSION}.zip
+  --file ./target/releases/elasticsearch-image-${VERSION}.zip
 
