@@ -12,5 +12,4 @@ deployment:
     branch: master
     commands:
       - go get github.com/aktau/github-release
-      - cp $CIRCLE_ARTIFACTS/*.rpm .
       - ./github-release.sh
