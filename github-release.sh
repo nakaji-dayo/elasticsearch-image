@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=`cat plugin-descriptor.properties | egrep ^version= | cut -d = -f 2`
+VERSION=`cat ./src/main/resources/plugin-descriptor.properties | egrep ^version= | cut -d = -f 2`
 NAME=elasticsearch-image-${VERSION}
 USER="nakaji-dayo"
 REPO="elasticsearch-image"
